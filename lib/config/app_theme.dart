@@ -18,30 +18,37 @@ class AppTheme {
   static const double kBorderRadiusLarge = 24.0;
   static const double kBorderRadiusXLarge = 32.0;
 
-  // Vision 2030 inspired refined colors - Modern palette
+  // Refined color palette with better harmony
   static const Color primaryGreen =
       Color(0xFF0CA678); // More vibrant teal-green
-  static const Color secondaryGreen = Color(0xFF12B886); // Brighter accent
-  static const Color successGreen = Color(0xFF40C057); // Success green color
-  static const Color accentGold = Color(0xFFE8B554); // Refined gold
+  static const Color secondaryGreen =
+      Color(0xFF12B886); // Complementary to primaryGreen
+  static const Color successGreen = Color(0xFF40C057); // Success indicator
+  static const Color accentGold =
+      Color(0xFFFFCC33); // Refined gold for better contrast
   static const Color white = Colors.white;
-  static const Color black = Color(0xFF212529); // Deeper black for contrast
+  static const Color black =
+      Color(0xFF101820); // Deeper black for better contrast
   static const Color lightGrey = Color(0xFFF8F9FA); // Modern light grey
   static const Color mediumGrey = Color(0xFFE9ECEF); // Softer medium grey
 
-  // Additional modern UI colors
+  // Additional modern UI colors with improved contrast
   static const Color subtleGrey = Color(0xFFDEE2E6); // For dividers and strokes
-  static const Color darkGrey = Color(0xFF495057); // For secondary text
+  static const Color darkGrey =
+      Color(0xFF343A40); // Darker for better readability
 
-  // AI-themed semantic colors - More vibrant
-  static const Color aiBlue = Color(0xFF339AF0); // Modern intelligent blue
-  static const Color aiAmber = Color(0xFFFFAB2E); // Brighter knowledge amber
+  // AI-themed semantic colors - Harmonized palette
+  static const Color aiBlue =
+      Color(0xFF228BE6); // More saturated intelligent blue
+  static const Color aiAmber = Color(0xFFFFA94D); // Warmer knowledge amber
   static const Color aiSoftPurple =
-      Color(0xFFD0BFFF); // Modern innovation purple
+      Color(0xFF845EF7); // Deeper innovation purple
   static const Color aiBgOverlay = Color(0x0A0CA678); // Updated subtle tint
   static const Color aiGreen = Color(0xFF20C997); // AI success indicator
+  static const Color aiDarkBlue = Color(0xFF1864AB); // Deep blue for emphasis
+  static const Color aiErrorRed = Color(0xFFF03E3E); // Error red
 
-  // Modern Gradients
+  // Modern Gradients - Updated for better visual flow
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -52,7 +59,7 @@ class AppTheme {
   static const LinearGradient accentGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [accentGold, Color(0xFFFFD166)],
+    colors: [accentGold, Color(0xFFFFD43B)],
     stops: [0.0, 1.0],
   );
 
@@ -67,11 +74,19 @@ class AppTheme {
         stops: const [0.0, 1.0],
       );
 
-  // Modern AI gradient
+  // Modern AI gradient - Improved color transition
   static const LinearGradient aiGradient = LinearGradient(
     begin: Alignment.topRight,
     end: Alignment.bottomLeft,
     colors: [aiBlue, aiSoftPurple],
+    stops: [0.0, 1.0],
+  );
+
+  // Dark theme AI gradient
+  static const LinearGradient darkAiGradient = LinearGradient(
+    begin: Alignment.topRight,
+    end: Alignment.bottomLeft,
+    colors: [Color(0xFF1971C2), Color(0xFF5F3DC4)],
     stops: [0.0, 1.0],
   );
 
@@ -453,5 +468,20 @@ class AppTheme {
           color: const Color.fromRGBO(208, 191, 255, 0.3),
           width: 1,
         ),
+      );
+
+  static BoxDecoration get glowingEffect => BoxDecoration(
+        gradient: LinearGradient(
+          colors: [aiBlue.withOpacity(0.5), aiSoftPurple.withOpacity(0.5)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: aiBlue.withOpacity(0.6),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
       );
 }

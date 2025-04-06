@@ -354,6 +354,12 @@ class ModernGlassAppBar extends StatelessWidget implements PreferredSizeWidget {
                 color: AppTheme.aiBlue,
                 fontWeight: FontWeight.w800,
                 fontSize: 24,
+                shadows: [
+                  Shadow(
+                    color: AppTheme.aiBlue.withOpacity(0.8),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
             ),
             Text(
@@ -362,6 +368,12 @@ class ModernGlassAppBar extends StatelessWidget implements PreferredSizeWidget {
                 color: const Color(0xFF20C997),
                 fontWeight: FontWeight.w900,
                 fontSize: 26,
+                shadows: [
+                  Shadow(
+                    color: const Color(0xFF20C997).withOpacity(0.8),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
             ),
           ],

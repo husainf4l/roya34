@@ -23,20 +23,20 @@ class WelcomeHeader extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppTheme.aiSoftPurple.withOpacity(0.25),
-                  AppTheme.aiBlue.withOpacity(0.25)
+                  AppTheme.aiSoftPurple.withOpacity(0.4),
+                  AppTheme.aiBlue.withOpacity(0.4),
                 ],
               ),
               borderRadius: BorderRadius.circular(32),
               border: Border.all(
-                color: AppTheme.white.withOpacity(0.4),
-                width: 0.5,
+                color: AppTheme.aiBlue.withOpacity(0.5),
+                width: 1.0,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.aiSoftPurple.withOpacity(0.15),
-                  blurRadius: 20,
-                  spreadRadius: 0,
+                  color: AppTheme.aiBlue.withOpacity(0.6),
+                  blurRadius: 30,
+                  spreadRadius: 5,
                 ),
               ],
             ),
@@ -53,9 +53,15 @@ class WelcomeHeader extends StatelessWidget {
                     Text(
                       "مرحباً بك في نظام رؤية الذكي",
                       style: GoogleFonts.cairo(
-                        color: AppTheme.black.withOpacity(0.8),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                        color: AppTheme.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                        shadows: [
+                          Shadow(
+                            color: AppTheme.aiBlue.withOpacity(0.8),
+                            blurRadius: 10,
+                          ),
+                        ],
                       ),
                     ),
                   ],

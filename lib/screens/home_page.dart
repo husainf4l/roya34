@@ -96,7 +96,9 @@ class _MyHomePageState extends State<MyHomePage>
           content: Text(
             "فشل في تحميل البيانات",
             textAlign: TextAlign.center,
-            style: GoogleFonts.cairo(),
+            style: GoogleFonts.cairo(
+              color: Colors.white, // Ensuring white text on error
+            ),
           ),
           backgroundColor: Colors.red,
         ),
@@ -138,15 +140,13 @@ class _MyHomePageState extends State<MyHomePage>
   Widget _buildVisionProBody() {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFF0F7FF),
-            Color(0xFFF8FAFF),
-            Color(0xFFFDFDFF),
-          ],
-        ),
+        color: Color(0xFF050A1A), // Solid dark color instead of gradient
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF1A2542), // Darker shadow
+            blurRadius: 8,
+          ),
+        ],
       ),
       child: SafeArea(
         child: SingleChildScrollView(
@@ -286,7 +286,8 @@ class _MyHomePageState extends State<MyHomePage>
                 child: Container(
                   width: 140,
                   decoration: BoxDecoration(
-                    color: AppTheme.white.withOpacity(0.4),
+                    color: AppTheme.darkGrey.withOpacity(
+                        0.4), // Darker background for better contrast
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: AppTheme.white.withOpacity(0.5),
@@ -327,7 +328,7 @@ class _MyHomePageState extends State<MyHomePage>
                             child: Text(
                               player.number.toString(),
                               style: GoogleFonts.cairo(
-                                color: player.teamColor,
+                                color: player.teamColor, // Already contrasting
                                 fontWeight: FontWeight.w700,
                                 fontSize: 24,
                               ),
@@ -338,7 +339,8 @@ class _MyHomePageState extends State<MyHomePage>
                       Text(
                         player.name,
                         style: GoogleFonts.cairo(
-                          color: AppTheme.black,
+                          color: Colors
+                              .white, // Changed to white for dark background
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                         ),
@@ -349,7 +351,8 @@ class _MyHomePageState extends State<MyHomePage>
                       Text(
                         player.position,
                         style: GoogleFonts.cairo(
-                          color: AppTheme.black.withOpacity(0.6),
+                          color: Colors.white.withOpacity(
+                              0.7), // Changed to white with opacity
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
                         ),
@@ -405,7 +408,8 @@ class _MyHomePageState extends State<MyHomePage>
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.white.withOpacity(0.4),
+                  color:
+                      AppTheme.darkGrey.withOpacity(0.4), // Darker background
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
                     color: AppTheme.white.withOpacity(0.5),
@@ -446,7 +450,7 @@ class _MyHomePageState extends State<MyHomePage>
                             Text(
                               moment.title,
                               style: GoogleFonts.cairo(
-                                color: AppTheme.black,
+                                color: Colors.white, // Changed to white
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
                               ),
@@ -456,7 +460,7 @@ class _MyHomePageState extends State<MyHomePage>
                             Text(
                               "${moment.minute}'",
                               style: GoogleFonts.cairo(
-                                color: AppTheme.aiBlue,
+                                color: AppTheme.aiBlue, // Already bright blue
                                 fontWeight: FontWeight.w700,
                                 fontSize: 12,
                               ),

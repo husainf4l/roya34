@@ -46,11 +46,15 @@ class FeaturedCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: gradient[0].withOpacity(0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
+                  color: gradient[0].withOpacity(0.5),
+                  blurRadius: 20,
+                  spreadRadius: 5,
                 ),
               ],
+              border: Border.all(
+                color: gradient[1].withOpacity(0.8),
+                width: 1.5,
+              ),
             ),
             child: Stack(
               children: [
