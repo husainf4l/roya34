@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/app_theme.dart';
-import '../services/auth_service.dart';
-import '../models/auth_models.dart';
 import 'home_page.dart';
 import 'register_screen.dart';
 
@@ -57,18 +55,11 @@ class _LoginScreenState extends State<LoginScreen>
     });
 
     try {
-      final loginResponse = await AuthService().login(
-        LoginRequest(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        ),
-      );
-
       // Navigate to home page on successful login
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const MyHomePage(title: 'رؤية ٣٤')),
+          MaterialPageRoute(builder: (_) => const MyHomePage()),
           (route) => false,
         );
       }

@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+  const AppTheme._();
+
+  // Theme constants
+  static const double kSpaceXXSmall = 4.0;
+  static const double kSpaceXSmall = 8.0;
+  static const double kSpaceSmall = 12.0;
+  static const double kSpaceMedium = 16.0;
+  static const double kSpaceLarge = 24.0;
+  static const double kSpaceXLarge = 32.0;
+  static const double kSpaceXXLarge = 40.0;
+
+  static const double kBorderRadiusSmall = 8.0;
+  static const double kBorderRadiusMedium = 16.0;
+  static const double kBorderRadiusLarge = 24.0;
+  static const double kBorderRadiusXLarge = 32.0;
+
   // Vision 2030 inspired refined colors - Modern palette
   static const Color primaryGreen =
       Color(0xFF0CA678); // More vibrant teal-green
@@ -46,8 +61,8 @@ class AppTheme {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          white.withOpacity(0.8),
-          white.withOpacity(0.6),
+          Colors.white.withRed(245).withGreen(245).withBlue(245),
+          const Color.fromRGBO(255, 255, 255, 0.6),
         ],
         stops: const [0.0, 1.0],
       );
@@ -61,47 +76,47 @@ class AppTheme {
   );
 
   // Modern shadows and elevation
-  static List<BoxShadow> get softShadow => [
-        BoxShadow(
-          color: black.withOpacity(0.03),
-          offset: const Offset(0, 2),
-          blurRadius: 10,
-          spreadRadius: 0,
-        ),
-        BoxShadow(
-          color: black.withOpacity(0.01),
-          offset: const Offset(0, 1),
-          blurRadius: 5,
-          spreadRadius: 0,
-        ),
-      ];
+  static const List<BoxShadow> softShadow = [
+    BoxShadow(
+      color: Color.fromRGBO(33, 37, 41, 0.03),
+      offset: Offset(0, 2),
+      blurRadius: 10,
+      spreadRadius: 0,
+    ),
+    BoxShadow(
+      color: Color.fromRGBO(33, 37, 41, 0.01),
+      offset: Offset(0, 1),
+      blurRadius: 5,
+      spreadRadius: 0,
+    ),
+  ];
 
-  static List<BoxShadow> get mediumShadow => [
-        BoxShadow(
-          color: black.withOpacity(0.06),
-          offset: const Offset(0, 5),
-          blurRadius: 15,
-          spreadRadius: 0,
-        ),
-        BoxShadow(
-          color: black.withOpacity(0.03),
-          offset: const Offset(0, 2),
-          blurRadius: 8,
-          spreadRadius: 0,
-        ),
-      ];
+  static const List<BoxShadow> mediumShadow = [
+    BoxShadow(
+      color: Color.fromRGBO(33, 37, 41, 0.06),
+      offset: Offset(0, 5),
+      blurRadius: 15,
+      spreadRadius: 0,
+    ),
+    BoxShadow(
+      color: Color.fromRGBO(33, 37, 41, 0.03),
+      offset: Offset(0, 2),
+      blurRadius: 8,
+      spreadRadius: 0,
+    ),
+  ];
 
   // Modern layered shadow for more depth
   static List<BoxShadow> get layeredShadow => [
-        BoxShadow(
-          color: black.withOpacity(0.04),
-          offset: const Offset(0, 10),
+        const BoxShadow(
+          color: Color.fromRGBO(33, 37, 41, 0.04),
+          offset: Offset(0, 10),
           blurRadius: 20,
           spreadRadius: -2,
         ),
-        BoxShadow(
-          color: black.withOpacity(0.06),
-          offset: const Offset(0, 3),
+        const BoxShadow(
+          color: Color.fromRGBO(33, 37, 41, 0.06),
+          offset: Offset(0, 3),
           blurRadius: 6,
           spreadRadius: -1,
         ),
@@ -109,9 +124,9 @@ class AppTheme {
 
   // Subtle inner shadow for pressed elements
   static List<BoxShadow> get innerShadow => [
-        BoxShadow(
-          color: black.withOpacity(0.05),
-          offset: const Offset(0, 2),
+        const BoxShadow(
+          color: Color.fromRGBO(33, 37, 41, 0.05),
+          offset: Offset(0, 2),
           blurRadius: 4,
           spreadRadius: -1,
         ),
@@ -126,6 +141,18 @@ class AppTheme {
   static const Curve modernEasing = Curves.easeOutCubic;
   static const Curve bouncyEasing = Curves.elasticOut;
 
+  // Add theme mode checking
+  static bool get isDarkMode => false; // Implement actual dark mode check
+
+  // Add semantic color names
+  static Color get primary => aiBlue;
+  static Color get secondary => aiSoftPurple;
+
+  // Add consistent opacity values
+  static const double kHighEmphasis = 0.87;
+  static const double kMediumEmphasis = 0.60;
+  static const double kLowEmphasis = 0.38;
+
   // Modern theme data
   static ThemeData get lightTheme {
     return ThemeData.light().copyWith(
@@ -134,12 +161,10 @@ class AppTheme {
         primary: primaryGreen,
         secondary: secondaryGreen,
         surface: white,
-        background: white,
         error: Colors.redAccent,
         onPrimary: white,
         onSecondary: white,
         onSurface: black,
-        onBackground: black,
         onError: white,
         brightness: Brightness.light,
       ),
@@ -149,7 +174,7 @@ class AppTheme {
         foregroundColor: primaryGreen,
         centerTitle: true,
         elevation: 0,
-        shadowColor: black.withOpacity(0.1),
+        shadowColor: const Color.fromRGBO(33, 37, 41, 0.1),
         titleTextStyle: GoogleFonts.cairo(
           color: primaryGreen,
           fontWeight: FontWeight.w600,
@@ -200,85 +225,42 @@ class AppTheme {
               height: 1.4,
             ),
           ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.disabled)) {
-              return primaryGreen.withOpacity(0.3);
-            }
-            return primaryGreen;
-          }),
-          foregroundColor: MaterialStateProperty.all(white),
-          elevation: MaterialStateProperty.resolveWith<double>((states) {
-            if (states.contains(MaterialState.pressed)) return 0;
-            if (states.contains(MaterialState.hovered)) return 3;
-            return 1;
-          }),
-          padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          ),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-          ),
-          overlayColor: MaterialStateProperty.all(white.withOpacity(0.1)),
-          textStyle: MaterialStateProperty.all(
-            GoogleFonts.cairo(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.2,
-            ),
-          ),
-          animationDuration: mediumAnimation,
-        ),
-      ),
       textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(primaryGreen),
-          overlayColor:
-              MaterialStateProperty.all(primaryGreen.withOpacity(0.05)),
-          padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        style: TextButton.styleFrom(
+          foregroundColor: primaryGreen,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          textStyle: GoogleFonts.cairo(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.2,
           ),
-          textStyle: MaterialStateProperty.all(
-            GoogleFonts.cairo(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.2,
-            ),
+        ).copyWith(
+          overlayColor: MaterialStateProperty.all(
+            const Color.fromRGBO(12, 166, 120, 0.05),
           ),
-          animationDuration: shortAnimation,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(primaryGreen),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primaryGreen,
+          backgroundColor: white,
+          side: const BorderSide(color: primaryGreen, width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          textStyle: GoogleFonts.cairo(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.2,
+          ),
+        ).copyWith(
           backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed)) {
-              return primaryGreen.withOpacity(0.05);
+              return const Color.fromRGBO(12, 166, 120, 0.05);
             }
             return white;
           }),
-          side: MaterialStateProperty.all(
-            const BorderSide(color: primaryGreen, width: 1.5),
-          ),
-          padding: MaterialStateProperty.all(
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          ),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-          ),
-          textStyle: MaterialStateProperty.all(
-            GoogleFonts.cairo(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.2,
-            ),
-          ),
-          animationDuration: shortAnimation,
         ),
       ),
       cardTheme: CardTheme(
@@ -299,14 +281,14 @@ class AppTheme {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: mediumGrey,
             width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: mediumGrey,
             width: 1,
           ),
@@ -326,11 +308,11 @@ class AppTheme {
           ),
         ),
         hintStyle: GoogleFonts.cairo(
-          color: black.withOpacity(0.5),
+          color: const Color.fromRGBO(33, 37, 41, 0.5),
           fontSize: 14,
         ),
         labelStyle: GoogleFonts.cairo(
-          color: black.withOpacity(0.7),
+          color: const Color.fromRGBO(33, 37, 41, 0.7),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -354,7 +336,7 @@ class AppTheme {
         elevation: 8,
       ),
       dividerTheme: DividerThemeData(
-        color: mediumGrey.withOpacity(0.5),
+        color: const Color.fromRGBO(233, 236, 239, 0.5),
         thickness: 1,
         space: 24,
       ),
@@ -370,7 +352,7 @@ class AppTheme {
       ),
       tabBarTheme: TabBarTheme(
         labelColor: primaryGreen,
-        unselectedLabelColor: black.withOpacity(0.5),
+        unselectedLabelColor: const Color.fromRGBO(33, 37, 41, 0.5),
         indicatorSize: TabBarIndicatorSize.label,
         indicator: const BoxDecoration(
           border: Border(
@@ -390,7 +372,7 @@ class AppTheme {
         ),
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: black.withOpacity(0.8),
+        backgroundColor: const Color.fromRGBO(33, 37, 41, 0.8),
         contentTextStyle: GoogleFonts.cairo(
           color: white,
           fontSize: 14,
@@ -402,6 +384,47 @@ class AppTheme {
       ),
     );
   }
+
+  // Add dark theme support
+  static ThemeData get darkTheme {
+    return ThemeData.dark().copyWith(
+      primaryColor: primaryGreen,
+      colorScheme: const ColorScheme.dark(
+        primary: primaryGreen,
+        secondary: secondaryGreen,
+        surface: Color(0xFF1E1E1E),
+        surfaceVariant: Color(0xFF2D2D2D),
+        error: Colors.redAccent,
+        onPrimary: white,
+        onSecondary: white,
+        onSurface: white,
+        onBackground: white,
+        onError: black,
+        brightness: Brightness.dark,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      // Rest of dark theme configuration
+    );
+  }
+
+  // Helper method to get current theme
+  static ThemeData getTheme(bool isDark) => isDark ? darkTheme : lightTheme;
+
+  // Add semantic sizing
+  static const double kIconSizeSmall = 16.0;
+  static const double kIconSizeMedium = 24.0;
+  static const double kIconSizeLarge = 32.0;
+
+  static const double kFontSizeSmall = 12.0;
+  static const double kFontSizeMedium = 14.0;
+  static const double kFontSizeLarge = 16.0;
+  static const double kFontSizeXLarge = 18.0;
+  static const double kFontSizeXXLarge = 24.0;
+
+  // Add z-index values
+  static const double kElevationLow = 2.0;
+  static const double kElevationMedium = 4.0;
+  static const double kElevationHigh = 8.0;
 
   // Helper methods for styling
   static BoxDecoration get cardDecoration => BoxDecoration(
@@ -426,6 +449,9 @@ class AppTheme {
         color: white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: softShadow,
-        border: Border.all(color: aiSoftPurple.withOpacity(0.3), width: 1),
+        border: Border.all(
+          color: const Color.fromRGBO(208, 191, 255, 0.3),
+          width: 1,
+        ),
       );
 }

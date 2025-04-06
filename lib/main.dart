@@ -143,7 +143,7 @@ class _MyAppState extends State<MyApp> {
                     Container(
                       width: 100,
                       height: 100,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -154,7 +154,7 @@ class _MyAppState extends State<MyApp> {
                         ),
                         shape: BoxShape.circle,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           "رؤية",
                           style: TextStyle(
@@ -173,9 +173,7 @@ class _MyAppState extends State<MyApp> {
             );
           }
           final isLoggedIn = snapshot.data ?? false;
-          return isLoggedIn
-              ? const MyHomePage(title: 'رؤية ٣٤')
-              : const LoginScreen();
+          return isLoggedIn ? const MyHomePage() : const LoginScreen();
         },
       ),
     );

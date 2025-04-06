@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/app_theme.dart';
-import '../services/auth_service.dart';
-import '../models/auth_models.dart';
 import 'home_page.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -70,23 +68,13 @@ class _RegisterScreenState extends State<RegisterScreen>
     try {
       // Split the name into firstName and lastName
       final fullName = _nameController.text.trim();
-      final nameParts = fullName.split(' ');
-      final firstName = nameParts.isNotEmpty ? nameParts[0] : fullName;
-      final lastName =
-          nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-
-      final registerResponse = await AuthService().register(
-        _emailController.text.trim(),
-        _passwordController.text,
-        firstName,
-        lastName,
-      );
+      fullName.split(' ');
 
       // Navigate to home page on successful registration
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const MyHomePage(title: 'رؤية ٣٤')),
+          MaterialPageRoute(builder: (_) => const MyHomePage()),
           (route) => false,
         );
       }
@@ -163,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       child: Container(
         width: 80,
         height: 80,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
