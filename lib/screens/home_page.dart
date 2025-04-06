@@ -332,7 +332,7 @@ class _MyHomePageState extends State<MyHomePage>
     final List<Map<String, dynamic>> featuredCards = [
       {
         'title': 'بث مباشر',
-        'subtitle': 'متابعة المباراة مع تحليل الذكاء الاصطناعي',
+        'subtitle': 'متابعة المباراة مع تحليل AI',
         'gradient': const [Color(0xFF4FACFE), Color(0xFF00F2FE)],
         'iconData': CupertinoIcons.tv_fill,
         'screen': const LiveViewScreen(),
@@ -547,8 +547,8 @@ class _MyHomePageState extends State<MyHomePage>
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                       child: Container(
-                        width: 70,
-                        height: 70,
+                        width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
                           color: action['color'].withOpacity(0.15),
                           borderRadius: BorderRadius.circular(24),
@@ -566,7 +566,7 @@ class _MyHomePageState extends State<MyHomePage>
                         ),
                         child: Icon(
                           action['icon'],
-                          size: 28,
+                          size: 20,
                           color: action['color'],
                         ),
                       ),
@@ -579,7 +579,7 @@ class _MyHomePageState extends State<MyHomePage>
                   style: GoogleFonts.cairo(
                     color: AppTheme.black.withOpacity(0.8),
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],

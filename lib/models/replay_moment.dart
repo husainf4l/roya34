@@ -1,18 +1,37 @@
 import 'package:flutter/material.dart';
 import 'player.dart';
 
+/// Represents a significant moment in a match replay.
 class ReplayMoment {
+  /// Unique identifier for the moment
   final String id;
-  final String title;
-  final String description;
-  final String timestamp; // Match time display
-  final Duration position; // Position in the video
-  final List<Player> involvedPlayers;
-  final ReplayMomentType type;
-  final String? thumbnailUrl; // Optional - could be null for placeholders
-  final int minute; // Match minute when the moment occurred
 
-  ReplayMoment({
+  /// Title describing the moment
+  final String title;
+
+  /// Detailed description of what happened
+  final String description;
+
+  /// Match time display (e.g., "45:20")
+  final String timestamp;
+
+  /// Position in the video timeline
+  final Duration position;
+
+  /// Players involved in this moment
+  final List<Player> involvedPlayers;
+
+  /// Type of moment (goal, save, etc.)
+  final ReplayMomentType type;
+
+  /// Optional thumbnail image URL
+  final String? thumbnailUrl;
+
+  /// Match minute when the moment occurred
+  final int minute;
+
+  /// Creates a new ReplayMoment instance.
+  const ReplayMoment({
     required this.id,
     required this.title,
     required this.description,
@@ -24,14 +43,41 @@ class ReplayMoment {
     required this.minute,
   });
 
-  // Getter to access the type as a string for display
+  /// Returns the type as a localized string for display.
   String get typeString => type.arabicLabel;
+
+  /// Creates a copy of this ReplayMoment with the given fields replaced with new values.
+  ReplayMoment copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? timestamp,
+    Duration? position,
+    List<Player>? involvedPlayers,
+    ReplayMomentType? type,
+    String? thumbnailUrl,
+    int? minute,
+  }) {
+    return ReplayMoment(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      timestamp: timestamp ?? this.timestamp,
+      position: position ?? this.position,
+      involvedPlayers: involvedPlayers ?? this.involvedPlayers,
+      type: type ?? this.type,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      minute: minute ?? this.minute,
+    );
+  }
 }
 
+/// Types of significant moments that can occur in a match.
 enum ReplayMomentType { goal, save, foul, tackle, pass, assist, other }
 
-// Extension to get UI-related properties based on moment type
+/// Extension to provide UI-related properties based on moment type.
 extension ReplayMomentTypeExtension on ReplayMomentType {
+  /// Returns the appropriate color for UI elements based on the moment type.
   Color get color {
     switch (this) {
       case ReplayMomentType.goal:
@@ -51,6 +97,7 @@ extension ReplayMomentTypeExtension on ReplayMomentType {
     }
   }
 
+  /// Returns the appropriate icon for UI elements based on the moment type.
   IconData get icon {
     switch (this) {
       case ReplayMomentType.goal:
@@ -70,22 +117,23 @@ extension ReplayMomentTypeExtension on ReplayMomentType {
     }
   }
 
+  /// Returns the Arabic label for the moment type.
   String get arabicLabel {
     switch (this) {
       case ReplayMomentType.goal:
-        return "هدف";
+        return 'هدف';
       case ReplayMomentType.save:
-        return "تصدي";
+        return 'تصدي';
       case ReplayMomentType.foul:
-        return "مخالفة";
+        return 'مخالفة';
       case ReplayMomentType.tackle:
-        return "تدخل";
+        return 'تدخل';
       case ReplayMomentType.pass:
-        return "تمريرة";
+        return 'تمريرة';
       case ReplayMomentType.assist:
-        return "تمريرة حاسمة";
+        return 'تمريرة حاسمة';
       case ReplayMomentType.other:
-        return "لقطة";
+        return 'لقطة';
     }
   }
 }

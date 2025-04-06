@@ -1,35 +1,45 @@
-import 'dart:math';
-import 'package:flutter/material.dart';
 import '../config/app_theme.dart';
 import '../models/player.dart';
 import '../models/replay_moment.dart';
 
+/// Provides mock data for the application.
+/// This service simulates data that would normally come from an API or database.
 class MockDataService {
-  static final Random _random = Random();
+  // Private constructor to prevent instantiation
+  MockDataService._();
 
-  // Current game info
+  // Constants for game info keys
+  static const String kHomeTeam = 'homeTeam';
+  static const String kAwayTeam = 'awayTeam';
+  static const String kHomeScore = 'homeScore';
+  static const String kAwayScore = 'awayScore';
+  static const String kCurrentTime = 'currentTime';
+  static const String kMatchPhase = 'matchPhase';
+
+  /// Returns information about the current game.
   static Map<String, dynamic> getCurrentGameInfo() {
     return {
-      'homeTeam': 'الهلال',
-      'awayTeam': 'النصر',
-      'homeScore': 2,
-      'awayScore': 1,
-      'currentTime': '78:24', // Format: MM:SS
-      'matchPhase': 'الشوط الثاني',
+      kHomeTeam: 'الهلال',
+      kAwayTeam: 'النصر',
+      kHomeScore: 2,
+      kAwayScore: 1,
+      kCurrentTime: '78:24', // Format: MM:SS
+      kMatchPhase: 'الشوط الثاني',
     };
   }
 
+  /// Returns a list of all players.
   static List<Player> getPlayers() {
     return [
       Player(
         id: 1,
-        name: "محمد العبدالله",
+        name: 'محمد العبدالله',
         number: 10,
-        position: "مهاجم",
+        position: 'مهاجم',
         performance: 92,
         energy: 84,
         speed: 32.4,
-        teamName: "الهلال",
+        teamName: 'الهلال',
         topShots: [
           'assets/images/players/player1_shot1.jpg',
           'assets/images/players/player1_shot2.jpg',
@@ -234,11 +244,13 @@ class MockDataService {
     ];
   }
 
+  /// Returns a list of currently active players in the match.
   static List<Player> getActivePlayers() {
     // Return a subset of players for live match
     return getPlayers().sublist(0, 5);
   }
 
+  /// Returns all available replay moments.
   static List<ReplayMoment> getAllReplayMoments() {
     final List<Player> players = getPlayers();
 
@@ -312,6 +324,7 @@ class MockDataService {
     ];
   }
 
+  /// Returns a list of featured players based on rating.
   static List<Player> getFeaturedPlayers() {
     // Return top players with highest ratings
     final players = getPlayers();
@@ -319,6 +332,7 @@ class MockDataService {
     return players.sublist(0, 6); // Return top 6 players
   }
 
+  /// Returns a filtered list of the most important replay moments.
   static List<ReplayMoment> getTopMoments() {
     final allMoments = getAllReplayMoments();
     // Filter by important types (goals, assists, saves)
