@@ -1,6 +1,49 @@
 import 'package:flutter/material.dart';
 import 'player.dart';
 
+enum ReplayMomentType {
+  goal,
+  assist,
+  save,
+  tackle,
+  foul,
+  yellowCard,
+  redCard,
+  penalty,
+  corner,
+  freeKick,
+  highlight
+}
+
+extension ReplayMomentTypeExtension on ReplayMomentType {
+  String get arabicLabel {
+    switch (this) {
+      case ReplayMomentType.goal:
+        return 'هدف';
+      case ReplayMomentType.assist:
+        return 'تمريرة حاسمة';
+      case ReplayMomentType.save:
+        return 'تصدي';
+      case ReplayMomentType.tackle:
+        return 'تدخل';
+      case ReplayMomentType.foul:
+        return 'خطأ';
+      case ReplayMomentType.yellowCard:
+        return 'بطاقة صفراء';
+      case ReplayMomentType.redCard:
+        return 'بطاقة حمراء';
+      case ReplayMomentType.penalty:
+        return 'ركلة جزاء';
+      case ReplayMomentType.corner:
+        return 'ركلة ركنية';
+      case ReplayMomentType.freeKick:
+        return 'ركلة حرة';
+      case ReplayMomentType.highlight:
+        return 'لقطة مميزة';
+    }
+  }
+}
+
 class ReplayMoment {
   final String id;
   final String title;
@@ -26,66 +69,51 @@ class ReplayMoment {
 
   // Getter to access the type as a string for display
   String get typeString => type.arabicLabel;
-}
 
-enum ReplayMomentType { goal, save, foul, tackle, pass, assist, other }
+  factory ReplayMoment.fromJson(Map<String, dynamic> json) {
+    // Parse duration from seconds
+    final int durationInSeconds = json['position'] ?? 0;
+    final Duration position = Duration(seconds: durationInSeconds);
 
-// Extension to get UI-related properties based on moment type
-extension ReplayMomentTypeExtension on ReplayMomentType {
-  Color get color {
-    switch (this) {
-      case ReplayMomentType.goal:
-        return Colors.blue;
-      case ReplayMomentType.save:
-        return Colors.purple;
-      case ReplayMomentType.foul:
-        return Colors.red;
-      case ReplayMomentType.tackle:
-        return Colors.orange;
-      case ReplayMomentType.pass:
-        return Colors.teal;
-      case ReplayMomentType.assist:
-        return Colors.amber;
-      case ReplayMomentType.other:
-        return Colors.grey;
+    // Parse involved players
+    List<Player> players = [];
+    if (json['involvedPlayers'] != null) {
+      players = (json['involvedPlayers'] as List)
+          .map((playerJson) => Player.fromJson(playerJson))
+          .toList();
     }
+
+    return ReplayMoment(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      timestamp: json['timestamp']?.toString() ?? '',
+      position: position,
+      involvedPlayers: players,
+      type: _parseReplayMomentType(json['type']),
+      thumbnailUrl: json['thumbnailUrl']?.toString(),
+      minute: json['minute'] ?? 0,
+    );
   }
 
-  IconData get icon {
-    switch (this) {
-      case ReplayMomentType.goal:
-        return Icons.sports_soccer;
-      case ReplayMomentType.save:
-        return Icons.bookmark_border;
-      case ReplayMomentType.foul:
-        return Icons.warning;
-      case ReplayMomentType.tackle:
-        return Icons.shield;
-      case ReplayMomentType.pass:
-        return Icons.swap_horiz;
-      case ReplayMomentType.assist:
-        return Icons.arrow_forward;
-      case ReplayMomentType.other:
-        return Icons.sports;
+  // Helper method to parse ReplayMomentType
+  static ReplayMomentType _parseReplayMomentType(dynamic typeValue) {
+    if (typeValue is int) {
+      try {
+        return ReplayMomentType.values[typeValue];
+      } catch (e) {
+        return ReplayMomentType.goal; // Default
+      }
+    } else if (typeValue is String) {
+      try {
+        return ReplayMomentType.values.firstWhere(
+          (type) => type.name.toLowerCase() == typeValue.toLowerCase(),
+          orElse: () => ReplayMomentType.goal,
+        );
+      } catch (e) {
+        return ReplayMomentType.goal; // Default
+      }
     }
-  }
-
-  String get arabicLabel {
-    switch (this) {
-      case ReplayMomentType.goal:
-        return "هدف";
-      case ReplayMomentType.save:
-        return "تصدي";
-      case ReplayMomentType.foul:
-        return "مخالفة";
-      case ReplayMomentType.tackle:
-        return "تدخل";
-      case ReplayMomentType.pass:
-        return "تمريرة";
-      case ReplayMomentType.assist:
-        return "تمريرة حاسمة";
-      case ReplayMomentType.other:
-        return "لقطة";
-    }
+    return ReplayMomentType.goal; // Default
   }
 }

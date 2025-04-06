@@ -7,10 +7,12 @@ import '../config/app_theme.dart';
 import '../models/replay_moment.dart';
 import '../models/player.dart';
 import '../services/mock_data_service.dart';
+import '../services/auth_service.dart';
 import 'live_view_screen.dart';
 import 'players_screen.dart';
 import 'replay_screen.dart';
 import 'player_recognition_screen.dart';
+import 'login_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -26,8 +28,11 @@ class _MyHomePageState extends State<MyHomePage>
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
-  late List<Player> _featuredPlayers;
-  late List<ReplayMoment> _topMoments;
+  late Future<List<Player>> _featuredPlayersFuture;
+  late Future<List<ReplayMoment>> _topMomentsFuture;
+  List<Player> _featuredPlayers = [];
+  List<ReplayMoment> _topMoments = [];
+  bool _isDataLoaded = false;
 
   int _activeCardIndex = 0;
   final PageController _pageController = PageController(viewportFraction: 0.9);
@@ -52,9 +57,12 @@ class _MyHomePageState extends State<MyHomePage>
       ),
     );
 
-    // Get mock data using static methods
-    _featuredPlayers = MockDataService.getFeaturedPlayers();
-    _topMoments = MockDataService.getTopMoments();
+    // Initialize futures
+    _featuredPlayersFuture = MockDataService.getFeaturedPlayers();
+    _topMomentsFuture = MockDataService.getTopMoments();
+
+    // Load data asynchronously
+    _loadData();
 
     // Listen to page changes for card carousel
     _pageController.addListener(() {
@@ -65,6 +73,24 @@ class _MyHomePageState extends State<MyHomePage>
         });
       }
     });
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final players = await _featuredPlayersFuture;
+      final moments = await _topMomentsFuture;
+
+      if (mounted) {
+        setState(() {
+          _featuredPlayers = players;
+          _topMoments = moments;
+          _isDataLoaded = true;
+        });
+      }
+    } catch (e) {
+      print('Error loading data: $e');
+      // Handle error state if needed
+    }
   }
 
   @override
@@ -133,9 +159,9 @@ class _MyHomePageState extends State<MyHomePage>
       centerTitle: true,
       actions: [
         _buildGlassIconButton(
-          icon: CupertinoIcons.settings,
+          icon: CupertinoIcons.list_bullet,
           onTap: () {
-            // Settings action
+            _showSuperMenu();
           },
         ),
         const SizedBox(width: 12),
@@ -143,31 +169,425 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget _buildGlassIconButton(
-      {required IconData icon, required VoidCallback onTap}) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: GestureDetector(
-        onTap: onTap,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppTheme.black.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: AppTheme.white.withOpacity(0.3),
-                  width: 0.5,
+  void _showSuperMenu() {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showGeneralDialog(
+      barrierLabel: "Super Menu",
+      barrierDismissible: true,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 300),
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 56.0, right: 16.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                      child: Container(
+                        width: 280,
+                        decoration: BoxDecoration(
+                          color: AppTheme.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: AppTheme.white.withOpacity(0.2),
+                            width: 0.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.black.withOpacity(0.3),
+                              blurRadius: 20,
+                              spreadRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // User profile section
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 20),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: AppTheme.white.withOpacity(0.1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          AppTheme.aiBlue,
+                                          AppTheme.aiSoftPurple,
+                                        ],
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "م",
+                                        style: GoogleFonts.cairo(
+                                          color: AppTheme.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "محمد عبدالله",
+                                          style: GoogleFonts.cairo(
+                                            color: AppTheme.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          "المدير الفني",
+                                          style: GoogleFonts.cairo(
+                                            color:
+                                                AppTheme.white.withOpacity(0.7),
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Menu items
+                            _buildMenuOption(
+                                icon: CupertinoIcons.chart_bar_alt_fill,
+                                title: "التحليلات والإحصائيات",
+                                color: AppTheme.aiBlue,
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "سيتم فتح التحليلات قريبًا",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.cairo(),
+                                      ),
+                                      backgroundColor: AppTheme.aiBlue,
+                                    ),
+                                  );
+                                }),
+                            _buildMenuOption(
+                                icon: CupertinoIcons.calendar,
+                                title: "جدول المباريات",
+                                color: AppTheme.aiSoftPurple,
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "سيتم عرض جدول المباريات قريبًا",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.cairo(),
+                                      ),
+                                      backgroundColor: AppTheme.aiSoftPurple,
+                                    ),
+                                  );
+                                }),
+                            _buildMenuOption(
+                                icon: CupertinoIcons.gear,
+                                title: "الإعدادات",
+                                color: AppTheme.accentGold,
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "سيتم فتح الإعدادات قريبًا",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.cairo(),
+                                      ),
+                                      backgroundColor: AppTheme.accentGold,
+                                    ),
+                                  );
+                                }),
+                            _buildMenuOption(
+                                icon: CupertinoIcons.bell_fill,
+                                title: "الإشعارات",
+                                color: Color(0xFF20C997),
+                                badge: "3",
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "سيتم عرض الإشعارات قريبًا",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.cairo(),
+                                      ),
+                                      backgroundColor: const Color(0xFF20C997),
+                                    ),
+                                  );
+                                }),
+                            _buildMenuOption(
+                                icon: CupertinoIcons.question_circle,
+                                title: "المساعدة والدعم",
+                                color: AppTheme.aiBlue,
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "سيتم فتح المساعدة قريبًا",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.cairo(),
+                                      ),
+                                      backgroundColor: AppTheme.aiBlue,
+                                    ),
+                                  );
+                                }),
+
+                            // Logout option
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Directionality(
+                                          textDirection: TextDirection.rtl,
+                                          child: AlertDialog(
+                                            title: Text(
+                                              "تسجيل الخروج",
+                                              style: GoogleFonts.cairo(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            content: Text(
+                                              "هل أنت متأكد من رغبتك في تسجيل الخروج؟",
+                                              style: GoogleFonts.cairo(),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                child: Text(
+                                                  "إلغاء",
+                                                  style: GoogleFonts.cairo(),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: Text(
+                                                  "تأكيد",
+                                                  style: GoogleFonts.cairo(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  // Call AuthService.logout() to clear auth tokens
+                                                  await AuthService.logout();
+
+                                                  // Close the dialog
+                                                  Navigator.of(context).pop();
+
+                                                  // Navigate to login screen
+                                                  Navigator.of(context)
+                                                      .pushAndRemoveUntil(
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          const LoginScreen(),
+                                                    ),
+                                                    (route) => false,
+                                                  );
+
+                                                  // Show logout success message
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        "تم تسجيل الخروج بنجاح",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style:
+                                                            GoogleFonts.cairo(),
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 16.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12.0, horizontal: 16.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(
+                                          color: Colors.red.withOpacity(0.3),
+                                          width: 0.5,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.red.withOpacity(0.2),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              CupertinoIcons.power,
+                                              color: Colors.red,
+                                              size: 18,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            "تسجيل الخروج",
+                                            style: GoogleFonts.cairo(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: AppTheme.black.withOpacity(0.8),
-              ),
+              );
+            },
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position: Tween(begin: const Offset(0, -0.2), end: const Offset(0, 0))
+              .animate(anim1),
+          child: FadeTransition(
+            opacity: anim1,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMenuOption({
+    required IconData icon,
+    required String title,
+    required Color color,
+    String? badge,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: color,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.cairo(
+                      color: AppTheme.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (badge != null)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      badge,
+                      style: GoogleFonts.cairo(
+                        color: AppTheme.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -177,14 +597,14 @@ class _MyHomePageState extends State<MyHomePage>
 
   Widget _buildVisionProBody() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            const Color(0xFFF0F7FF),
-            const Color(0xFFF8FAFF),
-            const Color(0xFFFDFDFF),
+            Color(0xFFF0F7FF),
+            Color(0xFFF8FAFF),
+            Color(0xFFFDFDFF),
           ],
         ),
       ),
@@ -332,7 +752,7 @@ class _MyHomePageState extends State<MyHomePage>
     final List<Map<String, dynamic>> featuredCards = [
       {
         'title': 'بث مباشر',
-        'subtitle': 'متابعة المباراة مع تحليل الذكاء الاصطناعي',
+        'subtitle': 'متابعة المباراة مع تحليل ai',
         'gradient': const [Color(0xFF4FACFE), Color(0xFF00F2FE)],
         'iconData': CupertinoIcons.tv_fill,
         'screen': const LiveViewScreen(),
@@ -1162,6 +1582,40 @@ class _MyHomePageState extends State<MyHomePage>
   Widget _buildNeuralNetworkEffect() {
     return CustomPaint(
       painter: NeuralNetworkPainter(),
+    );
+  }
+
+  Widget _buildGlassIconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: GestureDetector(
+        onTap: onTap,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.black.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: AppTheme.white.withOpacity(0.3),
+                  width: 0.5,
+                ),
+              ),
+              child: Icon(
+                icon,
+                color: AppTheme.black,
+                size: 22,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

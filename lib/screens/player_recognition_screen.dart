@@ -34,8 +34,14 @@ class _PlayerRecognitionScreenState extends State<PlayerRecognitionScreen>
   void initState() {
     super.initState();
 
-    // Get current game info
-    _gameInfo = MockDataService.getCurrentGameInfo();
+    // Get current game info properly
+    MockDataService.getCurrentGameInfo().then((data) {
+      if (mounted) {
+        setState(() {
+          _gameInfo = data;
+        });
+      }
+    });
 
     // Setup animations
     _pulseAnimationController = AnimationController(
@@ -96,7 +102,10 @@ class _PlayerRecognitionScreenState extends State<PlayerRecognitionScreen>
         });
 
         // Simulate detection process
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () async {
+          // Get players properly using await
+          final players = await MockDataService.getPlayers();
+
           if (mounted) {
             setState(() {
               _isAnalyzing = false;
@@ -104,7 +113,6 @@ class _PlayerRecognitionScreenState extends State<PlayerRecognitionScreen>
               _selectedTopShotIndex = 0;
 
               // Pick a random player from our mock data
-              final players = MockDataService.getPlayers();
               _detectedPlayer = players[math.Random().nextInt(players.length)];
             });
           }

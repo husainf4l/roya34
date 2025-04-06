@@ -30,12 +30,17 @@ class _PlayersScreenState extends State<PlayersScreen>
     );
 
     // Simulate API call with delayed response
-    Future.delayed(const Duration(milliseconds: 800), () {
-      players = MockDataService.getPlayers();
-      setState(() {
-        _isLoading = false;
-      });
-      _animationController.forward();
+    Future.delayed(const Duration(milliseconds: 800), () async {
+      // Use await to properly get players
+      final loadedPlayers = await MockDataService.getPlayers();
+
+      if (mounted) {
+        setState(() {
+          players = loadedPlayers;
+          _isLoading = false;
+        });
+        _animationController.forward();
+      }
     });
   }
 

@@ -12,12 +12,12 @@ class ReplayScreen extends StatefulWidget {
 }
 
 class _ReplayScreenState extends State<ReplayScreen> {
-  late List<ReplayMoment> _moments;
+  late Future<List<ReplayMoment>> _momentsFuture;
 
   @override
   void initState() {
     super.initState();
-    _moments = MockDataService.getAllReplayMoments();
+    _momentsFuture = MockDataService.getAllReplayMoments();
   }
 
   @override
@@ -31,13 +31,63 @@ class _ReplayScreenState extends State<ReplayScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ListView.builder(
-            itemCount: _moments.length,
-            itemBuilder: (context, index) {
-              final moment = _moments[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: _buildMomentCard(moment),
+          child: FutureBuilder<List<ReplayMoment>>(
+            future: _momentsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.primaryGreen,
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 60,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'حدث خطأ: ${snapshot.error}',
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _momentsFuture =
+                                MockDataService.getAllReplayMoments();
+                          });
+                        },
+                        child: const Text('إعادة المحاولة'),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'لا توجد لقطات إعادة متاحة',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                );
+              }
+
+              final moments = snapshot.data!;
+              return ListView.builder(
+                itemCount: moments.length,
+                itemBuilder: (context, index) {
+                  final moment = moments[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: _buildMomentCard(moment),
+                  );
+                },
               );
             },
           ),

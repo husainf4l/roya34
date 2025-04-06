@@ -45,5 +45,24 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>تحتاج التطبيق إلى الوصول إلى الكاميرا لالتقاط الصور (This app needs camera access to take pictures)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>تحتاج التطبيق إلى الوصول إلى مكتبة الصور لحفظ الصور واختيارها (This app needs access to the photo library to save and pick images)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>192.168.1.244</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>

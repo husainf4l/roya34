@@ -41,11 +41,16 @@ class _LiveViewScreenState extends State<LiveViewScreen>
         });
 
         // Simulate AI analysis completion
-        Future.delayed(const Duration(seconds: 3), () {
-          setState(() {
-            _isAnalyzing = false;
-            _activePlayers = MockDataService.getPlayers().sublist(0, 5);
-          });
+        Future.delayed(const Duration(seconds: 3), () async {
+          // Use await to properly get players
+          final players = await MockDataService.getPlayers();
+
+          if (mounted) {
+            setState(() {
+              _isAnalyzing = false;
+              _activePlayers = players.take(5).toList();
+            });
+          }
         });
       });
     });
