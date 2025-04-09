@@ -22,11 +22,11 @@ Backend & Web Platforms
 
 The full Roya34 ecosystem includes:
 
-🔗 NestJS Backend:https://github.com/husainf4l/royabackend.gitHandles data processing, user management, match data, AI predictions, and API integration.
+NestJS Backend:https://github.com/husainf4l/royabackend.gitHandles data processing, user management, match data, AI predictions, and API integration.
 
-🌐 Next.js Web Platform:https://github.com/husainf4l/royawebPublic website and dashboard showcasing the project, team, and live data demos.
+Next.js Web Platform:https://github.com/husainf4l/royawebPublic website and dashboard showcasing the project, team, and live data demos.
 
-🔄 n8n AI Automation Templates:Available in the Next.js Web repo, including prototype workflows used for AI image-to-text analysis and data integration.
+n8n AI Automation Templates:Available in the Next.js Web repo, including prototype workflows used for AI image-to-text analysis and data integration.
 
 Technologies Used
 
